@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitoramento de Madeira</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://images.unsplash.com/photo-1614845961454-84dc64141c1d?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: #fff;
+    }
+
+    .overlay {
+      background-color: rgba(0, 40, 0, 0.75);
+      min-height: 100vh;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2.5em;
+      color: #d0ffd0;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 600px;
+      margin: 20px auto;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    .camera-view {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .dados {
+      margin-top: 15px;
+      font-size: 1.2em;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #c0ffc0;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="card">
+      <h1>🌲 Monitoramento de Madeira</h1>
+
+      <!-- Imagem da ESP32-CAM -->
+      <img id="camera" class="camera-view" src="http://IP_DA_ESP32/cam" alt="Visualização da madeira">
+
+      <!-- Temperatura e Umidade -->
+      <div class="dados">
+        <p><span class="label">🌡️ Temperatura:</span> <span id="temp">--</span> °C</p>
+        <p><span class="label">💧 Umidade:</span> <span id="hum">--</span> %</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ipESP = "http://IP_DA_ESP32"; // Troque pelo IP real da sua ESP32-CAM
+
+    function atualizarDados() {
+      fetch(ipESP + "/dados")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("temp").textContent = data.temperatura.toFixed(1);
+          document.getElementById("hum").textContent = data.umidade.toFixed(1);
+        })
+        .catch(err => {
+          console.error("Erro ao obter dados:", err);
+          document.getElementById("temp").textContent = "--";
+          document.getElementById("hum").textContent = "--";
+        });
+    }
+
+    // Atualiza a cada 5 segundos
+    setInterval(atualizarDados, 5000);
+    atualizarDados(); // Atualiza imediatamente ao carregar
+  </script>
+</body>
+</html>
+
