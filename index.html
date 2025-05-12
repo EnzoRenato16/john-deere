@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Biosense | Monitoramento de Madeira</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="overlay">
+    <header>
+      <h1>🌿 Biosense</h1>
+      <p>Soluções inteligentes para monitoramento ambiental</p>
+    </header>
+
+    <div class="card">
+      <img id="camera" src="http://IP_DA_ESP32/cam" alt="Visualização da madeira em tempo real">
+      <div class="dados">
+        <p><span class="label">🌡️ Temperatura:</span> <span id="temp">--</span> °C</p>
+        <p><span class="label">💧 Umidade:</span> <span id="hum">--</span> %</p>
+      </div>
+    </div>
+
+    <footer>
+      &copy; 2025 Biosense Ambiental. Todos os direitos reservados.
+    </footer>
+  </div>
+
+  <script>
+    const ipESP = "http://IP_DA_ESP32"; // 👉 Substitua pelo IP real da ESP32
+
+    function atualizarDados() {
+      fetch(ipESP + "/dados")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("temp").textContent = data.temperatura.toFixed(1);
+          document.getElementById("hum").textContent = data.umidade.toFixed(1);
+        })
+        .catch(err => {
+          console.error("Erro ao obter dados:", err);
+          document.getElementById("temp").textContent = "--";
+          document.getElementById("hum").textContent = "--";
+        });
+    }
+
+    setInterval(atualizarDados, 5000);
+    atualizarDados();
+  </script>
+</body>
+</html>
