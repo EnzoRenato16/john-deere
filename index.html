@@ -46,4 +46,25 @@
     atualizarDados();
   </script>
 </body>
+  <script>
+  const ipESP = "http://192.168.1.100"; // substitua pelo IP real da sua ESP32-CAM
+
+  function atualizarDados() {
+    fetch(`${ipESP}/dados`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("temp").textContent = data.temperatura + " °C";
+        document.getElementById("umid").textContent = data.umidade + " %";
+      })
+      .catch(err => {
+        document.getElementById("temp").textContent = "Erro";
+        document.getElementById("umid").textContent = "Erro";
+        console.error("Erro ao obter dados do DHT22:", err);
+      });
+  }
+
+  // Atualiza a cada 5 segundos
+  setInterval(atualizarDados, 5000);
+  atualizarDados(); // Atualiza imediatamente ao carregar
+</script>
 </html>
