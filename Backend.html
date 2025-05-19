@@ -2,93 +2,124 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Monitoramento de Madeira</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biosense | Monitoramento Ambiental</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('https://images.unsplash.com/photo-1614845961454-84dc64141c1d?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
-      background-size: cover;
+    * {
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: url('https://images.unsplash.com/photo-1561470666-b83b405f7b48?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
     }
-
     .overlay {
-      background-color: rgba(0, 40, 0, 0.75);
+      background-color: rgba(0, 32, 0, 0.8);
       min-height: 100vh;
-      padding: 30px;
+      padding: 3rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
       text-align: center;
+      margin-bottom: 2rem;
     }
-
-    h1 {
-      margin-top: 0;
-      font-size: 2.5em;
-      color: #d0ffd0;
+    header h1 {
+      font-size: 3rem;
+      color: #b9fbc0;
     }
-
+    header p {
+      font-size: 1.2rem;
+      color: #e0ffe5;
+    }
     .card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 20px;
-      border-radius: 15px;
-      max-width: 600px;
-      margin: 20px auto;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    }
-
-    .camera-view {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 2rem;
       width: 100%;
-      border-radius: 10px;
-      margin-top: 15px;
+      max-width: 700px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
     }
-
+    .camera-frame {
+      width: 100%;
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      border: 2px solid #b9fbc0;
+    }
+    .camera-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
     .dados {
-      margin-top: 15px;
-      font-size: 1.2em;
+      display: flex;
+      justify-content: space-around;
+      font-size: 1.5rem;
+      color: #eaffea;
     }
-
-    .label {
-      font-weight: bold;
-      color: #c0ffc0;
+    .dados span.label {
+      font-weight: 600;
+      color: #9fff9c;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #b5ddb2;
+    }
+    @media (max-width: 600px) {
+      .dados {
+        flex-direction: column;
+        gap: 1rem;
+      }
     }
   </style>
 </head>
 <body>
   <div class="overlay">
+    <header>
+      <h1>🌿 Biosense</h1>
+      <p>Monitoramento inteligente de madeira com imagem e clima em tempo real</p>
+    </header>
+
     <div class="card">
-      <h1>🌲 Monitoramento de Madeira</h1>
-
-      <!-- Imagem da ESP32-CAM -->
-      <img id="camera" class="camera-view" src="http://IP_DA_ESP32/cam" alt="Visualização da madeira">
-
-      <!-- Temperatura e Umidade -->
+      <div class="camera-frame">
+        <img id="camera" src="http://192.168.0.150/cam" alt="Imagem da Madeira em Tempo Real">
+      </div>
       <div class="dados">
-        <p><span class="label">🌡️ Temperatura:</span> <span id="temp">--</span> °C</p>
-        <p><span class="label">💧 Umidade:</span> <span id="hum">--</span> %</p>
+        <div><span class="label">🌡️ Temperatura:</span> <span id="temp">--</span> °C</div>
+        <div><span class="label">💧 Umidade:</span> <span id="hum">--</span> %</div>
       </div>
     </div>
+
+    <footer>&copy; 2025 Biosense Ambiental. Todos os direitos reservados.</footer>
   </div>
 
   <script>
-    const ipESP = "http://IP_DA_ESP32"; // Troque pelo IP real da sua ESP32-CAM
+    const ipESP = "http://192.168.0.150"; // Altere para o IP real da ESP32-CAM
 
     function atualizarDados() {
       fetch(ipESP + "/dados")
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
           document.getElementById("temp").textContent = data.temperatura.toFixed(1);
           document.getElementById("hum").textContent = data.umidade.toFixed(1);
         })
-        .catch(err => {
-          console.error("Erro ao obter dados:", err);
-          document.getElementById("temp").textContent = "--";
-          document.getElementById("hum").textContent = "--";
+        .catch(error => {
+          console.error("Erro ao buscar dados do DHT22:", error);
         });
     }
 
-    // Atualiza a cada 5 segundos
     setInterval(atualizarDados, 5000);
-    atualizarDados(); // Atualiza imediatamente ao carregar
+    atualizarDados();
   </script>
 </body>
 </html>
-
